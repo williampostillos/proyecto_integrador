@@ -1,5 +1,5 @@
 Integrantes:
 
-William Postillos Aquino
-Miguel Sarmiento
-Adriana Hervias
+William Postillos Aquino<br>
+Miguel Sarmiento<br>
+Adriana Hervias<br>
