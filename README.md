@@ -1,1 +1,5 @@
-# proyecto_integrador
+Integrantes:
+
+William Postillos Aquino
+Miguel Sarmiento
+Adriana Hervias
