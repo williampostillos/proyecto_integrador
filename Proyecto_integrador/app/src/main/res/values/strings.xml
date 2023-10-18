@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Proyecto_integrador</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="correo">Correo</string>
+    <string name="usuario">Usuario</string>
+    <string name="registrate_aqu">Registrate aquí</string>
+    <string name="inicia_sesion_aqui">Inicia sesión aquí</string>
+    <string name="login">Login</string>
+    <string name="registro">Registro</string>
+    <string name="registrate">Registrate</string>
 </resources>

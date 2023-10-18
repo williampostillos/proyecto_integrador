@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition{ true }
 
         Thread.sleep(800)
-        val intent = Intent(this, RegistroActivity::class.java)
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
