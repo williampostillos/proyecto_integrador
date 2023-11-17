@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".Activitis.HomeActivity">
 
     <FrameLayout
         android:id="@+id/frameContainer"
@@ -15,10 +15,9 @@
         android:id="@+id/navMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/navegation_menu"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@drawable/background"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
-        />
+        app:menu="@menu/navegation_menu" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

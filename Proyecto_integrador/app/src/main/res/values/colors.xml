@@ -3,5 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF5722</color>
+
+    <color name="back_1">#1a2332</color>
+    <color name="back_2">#161c2a</color>
     <color name="fondo_splash">#A1D0D6</color>
 </resources>
