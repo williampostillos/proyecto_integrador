@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.proyecto_integrador.Activities.HomeFragment
+import com.example.proyecto_integrador.Activities.InformacionFragment
 import com.example.proyecto_integrador.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
