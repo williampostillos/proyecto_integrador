@@ -56,7 +56,7 @@ class RegistroActivity : AppCompatActivity() {
             Request.Method.POST,
             url1,
             Response.Listener<String> { response ->
-                Toast.makeText(this@RegistroActivity, "Correcto", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegistroActivity, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show()
             },
             Response.ErrorListener { error ->
                 // Manejar el error específico de Volley aquí

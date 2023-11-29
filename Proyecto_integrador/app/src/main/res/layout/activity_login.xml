@@ -24,9 +24,9 @@
         android:textColor="@color/black"/>
 
     <EditText
-        android:id="@+id/edt_Email"
+        android:id="@+id/edt_User"
         style="@style/viewCustom"
-        android:hint="email"
+        android:hint="user"
         android:inputType="textEmailAddress"
         android:paddingTop="30dp"
         android:layout_marginTop="10dp"
@@ -34,7 +34,7 @@
         android:backgroundTint="@color/black"/>
 
     <EditText
-        android:id="@+id/etPassword"
+        android:id="@+id/edt_Password"
         style="@style/viewCustom"
         android:hint="password"
         android:inputType="textPassword"
