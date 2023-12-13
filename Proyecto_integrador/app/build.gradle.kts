@@ -62,4 +62,13 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
 
 
+    implementation("org.apache.httpcomponents:httpclient-android:4.3.5.1") {
+        exclude(group = "org.apache.httpcomponents", module = "httpclient")
+    }
+
+    implementation("com.loopj.android:android-async-http:1.4.10")
+
+    implementation("com.google.code.gson:gson:2.8.8")
+
+
 }

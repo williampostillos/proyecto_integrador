@@ -1,60 +1,57 @@
 package com.example.proyecto_integrador.Activitis
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.example.proyecto_integrador.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AlertasFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AlertasFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alertas, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_alertas, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AlertasFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AlertasFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        val editText: EditText = view.findViewById(R.id.searchCity)
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+
+        backButton.setOnClickListener {
+            activity?.finish()
+        }
+
+        editText.setOnEditorActionListener { v, actionId, event ->
+            val newCity = editText.text.toString()
+
+            // Crear una instancia del fragmento que deseas mostrar
+            val mostrarAlertasFragment = MostrarAlertasFragment()
+
+            // Crear un Bundle para pasar datos al fragmento
+            val bundle = Bundle()
+            bundle.putString("City", newCity)
+            mostrarAlertasFragment.arguments = bundle
+
+            // Iniciar la transacción del fragmento
+            val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+
+            // Reemplazar el fragmento actual con el nuevo fragmento
+            transaction.replace(R.id.frameContainer, mostrarAlertasFragment)
+
+            // Añadir la transacción a la pila para que el botón de retroceso funcione correctamente
+            transaction.addToBackStack(null)
+
+            // Confirmar la transacción
+            transaction.commit()
+
+            false
+        }
+
+        return view
     }
 }

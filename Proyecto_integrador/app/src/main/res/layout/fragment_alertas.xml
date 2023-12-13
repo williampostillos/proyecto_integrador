@@ -3,14 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activitis.AlertasFragment">
+    tools:context=".Activitis.AlertasFragment"
+    android:background="@drawable/background">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:textColor="@color/black"
-        android:layout_gravity="center"
-        android:text="Fragment3" />
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/back"
+        android:id="@+id/backButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+    </ImageView>
+    <!--android:background="@drawable/wind"-->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:hint="Enter City Name"
+        android:layout_marginLeft="30dp"
+        android:textSize="20sp"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:imeOptions="actionGo"
+        android:id="@+id/searchCity"
+        android:inputType="textAutoCorrect"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50mm">
+
+    </EditText>
 
 </FrameLayout>
