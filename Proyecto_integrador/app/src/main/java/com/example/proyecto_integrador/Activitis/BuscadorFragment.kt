@@ -4,44 +4,76 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.proyecto_integrador.R
+import com.example.proyecto_integrador.databinding.FragmentBuscadorBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import org.json.JSONObject
 
 
 class BuscadorFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var txt_latitud: EditText
-    private lateinit var txt_longitud: EditText
+    private lateinit var binding: FragmentBuscadorBinding
     private lateinit var mMap: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_buscador, container, false)
-        mapeo(view)
-        return view
+        binding = FragmentBuscadorBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun mapeo(view: View) {
-        txt_latitud = view.findViewById(R.id.txt_latitud)
-        txt_longitud = view.findViewById(R.id.txt_longitud)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Obtén el SupportMapFragment
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Resto del código de mapeo...
+        // Obtén la información meteorológica para la ciudad de Lima
+        getJSONDataByname("Lima")
     }
+    private fun getJSONDataByname(cityname: String) {
+        val API_KEY = "b8c4acbdc7b133df1986cb69732b5dac"
 
+        val queue = Volley.newRequestQueue(requireContext())
+        val url = "https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${API_KEY}"
+
+        val jsonRequest = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            Response.Listener { response ->
+                setValues(response)
+            },
+            Response.ErrorListener {
+                // Handle error
+            })
+
+        queue.add(jsonRequest)
+    }
+    private fun setValues(response: JSONObject) {
+        val lat = response.getJSONObject("coord").getString("lat")
+        val long = response.getJSONObject("coord").getString("lon")
+
+        var maxtemp=response.getJSONObject("main").getString("temp_max")
+        maxtemp=((((maxtemp).toFloat()-273.15)).toInt()).toString()
+        binding.maxTemp.text=maxtemp+"°C"
+
+        var mintemp=response.getJSONObject("main").getString("temp_min")
+        mintemp=((((mintemp).toFloat()-273.15)).toInt()).toString()
+        binding.minTemp.text=mintemp+"°C"
+
+        binding.humidity.text = response.getJSONObject("main").getString("humidity") + "%"
+    }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -50,8 +82,7 @@ class BuscadorFragment : Fragment(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(peru))
 
         mMap.setOnMapClickListener { latLng ->
-            txt_latitud.setText("${latLng.latitude}")
-            txt_longitud.setText("${latLng.longitude}")
+
 
             mMap.clear()
             val peru = LatLng(latLng.latitude, latLng.longitude)
@@ -60,8 +91,7 @@ class BuscadorFragment : Fragment(), OnMapReadyCallback {
         }
 
         mMap.setOnMapLongClickListener { latLng ->
-            txt_latitud.setText("${latLng.latitude}")
-            txt_longitud.setText("${latLng.longitude}")
+
 
             mMap.clear()
             val peru = LatLng(latLng.latitude, latLng.longitude)
@@ -69,5 +99,14 @@ class BuscadorFragment : Fragment(), OnMapReadyCallback {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(peru))
         }
 
+        fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+
+            // Acceder a las vistas utilizando binding
+
+            val lat = arguments?.getString("lat")
+            val long = arguments?.getString("long")
+
+        }
     }
 }

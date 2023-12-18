@@ -36,7 +36,7 @@ class HomeActivity : AppCompatActivity() {
 
             R.id.itemFragment3 ->{
                 supportFragmentManager.commit {
-                    replace<MostrarAlertasFragment>(R.id.frameContainer)
+                    replace<AlertasFragment>(R.id.frameContainer)
                     setReorderingAllowed(true)
                     addToBackStack("replacement")
                 }

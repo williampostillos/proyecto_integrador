@@ -1,216 +1,139 @@
 package com.example.proyecto_integrador.Activitis
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.android.volley.Header
 import com.example.proyecto_integrador.R
-import com.loopj.android.http.AsyncHttpClient
-import com.loopj.android.http.JsonHttpResponseHandler
-import com.loopj.android.http.RequestParams
-import org.json.JSONObject
-import com.google.gson.Gson
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationRequest
 
 class MostrarAlertasFragment : Fragment() {
 
-    private val APP_ID = "2306b4e5ddce5da1dbdfadc0038ecac0"
-    private val WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
-    private val MIN_TIME: Long = 5000
-    private val MIN_DISTANCE = 1000f
-    private val REQUEST_CODE = 101
-
-    private var locationProvider = LocationManager.GPS_PROVIDER
-
-    private var nameofCity: TextView? = null
-    private var weatherState: TextView? = null
-    private var temperature: TextView? = null
-    private var weatherIcon: ImageView? = null
-    private var cityFinder: RelativeLayout? = null
-
-    private var locationManager: LocationManager? = null
-    private var locationListener: LocationListener? = null
+    lateinit var mfusedlocation: FusedLocationProviderClient
+    private val myRequestCode = 1010
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_mostrar_alertas, container, false)
-
-        // Inicializar vistas
-        nameofCity = view.findViewById(R.id.cityName)
-        weatherState = view.findViewById(R.id.weatherCondition)
-        temperature = view.findViewById(R.id.temperature)
-        weatherIcon = view.findViewById(R.id.weatherIcon)
-        cityFinder = view.findViewById(R.id.cityFinder)
-
-        cityFinder?.setOnClickListener {
-            val alertasFragment = AlertasFragment()
-
-            // Iniciar la transacción del fragmento
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-
-            // Reemplazar el fragmento actual con el fragmento de AlertasFragment
-            transaction.replace(R.id.frameContainer, alertasFragment)
-
-            // Añadir la transacción a la pila para que el botón de retroceso funcione correctamente
-            transaction.addToBackStack(null)
-
-            // Confirmar la transacción
-            transaction.commit()
-        }
-
-
-
-        return view
+        return inflater.inflate(R.layout.fragment_mostrar_alertas, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        val mIntent: Intent = requireActivity().intent
-        val city = mIntent.getStringExtra("City")
-        if (city != null) {
-            getWeatherForNewCity(city)
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        mfusedlocation = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        getLastLocation()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    @SuppressLint("MissingPermission")
+    private fun getLastLocation() {
+        if (checkPermission()) {
+            if (isLocationEnabled()) {
+                mfusedlocation.lastLocation.addOnCompleteListener { task ->
+                    val location: Location? = task.result
+                    if (location == null) {
+                        newLocation()
+                    } else {
+                        // Crear una instancia del fragmento AlertasFragment
+                        val alertasFragment = AlertasFragment()
+
+                        // Pasar datos al fragmento si es necesario
+                        val bundle = Bundle()
+                        bundle.putString("lat", location.latitude.toString())
+                        bundle.putString("long", location.longitude.toString())
+                        alertasFragment.arguments = bundle
+
+                        // Reemplazar el fragmento actual con AlertasFragment
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.frameContainer, alertasFragment)
+                            .commit()
+                    }
+                }
+            } else {
+                Toast.makeText(requireContext(), "Please Turn on your GPS location", Toast.LENGTH_LONG).show()
+            }
         } else {
-            getWeatherForCurrentLocation()
+            requestPermission()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    @SuppressLint("MissingPermission")
+    private fun newLocation() {
+        val locationRequest = com.google.android.gms.location.LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
 
-    private fun getWeatherForNewCity(city: String) {
-        val params = RequestParams()
-        params.put("q", city)
-        params.put("appid", APP_ID)
-        letsdoSomeNetworking(params)
+        mfusedlocation = LocationServices.getFusedLocationProviderClient(requireActivity())
+        mfusedlocation.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
-    private fun getWeatherForCurrentLocation() {
-        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                val latitude = location.latitude.toString()
-                val longitude = location.longitude.toString()
-                val params = RequestParams()
-                params.put("lat", latitude)
-                params.put("lon", longitude)
-                params.put("appid", APP_ID)
-                letsdoSomeNetworking(params)
-            }
-
-            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-            override fun onProviderEnabled(provider: String) {}
-            override fun onProviderDisabled(provider: String) {
-                // No se puede obtener la ubicación
-            }
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            val lastLocation: Location = p0.lastLocation
         }
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_CODE
-            )
-            return
-        }
-        locationManager?.requestLocationUpdates(
-            locationProvider,
-            MIN_TIME,
-            MIN_DISTANCE,
-            locationListener as LocationListener
+            ), myRequestCode
         )
     }
 
+    private fun checkPermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<String>,
+        permissions: Array<out String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == myRequestCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(
-                    requireActivity(),
-                    "Ubicación obtenida exitosamente",
-                    Toast.LENGTH_SHORT
-                ).show()
-                getWeatherForCurrentLocation()
-            } else {
-                // El usuario denegó el permiso
-                Toast.makeText(
-                    requireActivity(),
-                    "La aplicación necesita permisos de ubicación para obtener datos del clima.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                getLastLocation()
             }
         }
     }
-
-    private fun letsdoSomeNetworking(params: RequestParams) {
-        val client = AsyncHttpClient()
-        client.get(WEATHER_URL, params, object : JsonHttpResponseHandler() {
-            fun onSuccess(
-                statusCode: Int,
-                headers: Array<Header>?,
-                response: JSONObject?
-            ) {
-                Toast.makeText(requireActivity(), "Datos obtenidos con éxito", Toast.LENGTH_SHORT).show()
-
-                val gson = Gson()
-                val jsonString = response?.toString()
-                val weatherData: WeatherData = gson.fromJson(jsonString, WeatherData::class.java)
-
-                updateUI(weatherData)
-            }
-
-            fun onFailure(
-                statusCode: Int,
-                headers: Array<Header>?,
-                throwable: Throwable?,
-                errorResponse: JSONObject?
-            ) {
-                // Manejar el fallo
-                Log.e("Networking", "Error: $statusCode", throwable)
-                Toast.makeText(
-                    requireActivity(),
-                    "Error obteniendo datos del clima. Por favor, inténtelo de nuevo.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-        })
-    }
-
-    private fun updateUI(weather: WeatherData) {
-        temperature?.text = weather.temperature
-        nameofCity?.text = weather.city
-        weatherState?.text = weather.weatherType
-        val resourceID = resources.getIdentifier(weather.icon, "drawable", requireActivity().packageName)
-        weatherIcon?.setImageResource(resourceID)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        locationListener?.let { locationManager?.removeUpdates(it) }
-    }
-
 }

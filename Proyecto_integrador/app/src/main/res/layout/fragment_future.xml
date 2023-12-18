@@ -156,7 +156,7 @@
                                 android:id="@+id/textView10"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="12 Km/h"
+                                android:text="5.4 Km/h"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />
@@ -189,7 +189,7 @@
                                 android:id="@+id/textView12"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="18%"
+                                android:text="69%"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="cityFinder" type="id" />
+    <item name="textoP" type="id" />
+    <item name="textoS" type="id" />
+    <item name="textoT" type="id" />
 </resources>

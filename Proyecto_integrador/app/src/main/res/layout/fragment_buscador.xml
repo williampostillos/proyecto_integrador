@@ -13,61 +13,80 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/texto1"
-            android:layout_width="0dp"
+            android:id="@id/textoP"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Latitud:"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"
+            android:text="Humedad:"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-        <EditText
-            android:id="@+id/txt_latitud"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:text="Humidity"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:hint="latitud"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:id="@+id/humidity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/texto1" />
+            app:layout_constraintTop_toBottomOf="@id/textoP" />
 
         <TextView
-            android:id="@+id/texto2"
-            android:layout_width="0dp"
+            android:id="@id/textoS"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Longitud:"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"
+            android:text="Temperatura maxima:"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_latitud" />
+            app:layout_constraintTop_toBottomOf="@id/humidity" />
 
-        <EditText
-            android:id="@+id/txt_longitud"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/max_temp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:text="max: temp"
+            android:padding="5dp"
+            android:textSize="16sp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:hint="longitud"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/texto2" />
+            app:layout_constraintTop_toBottomOf="@+id/textoS" />
+
+        <TextView
+            android:id="@id/textoT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperatura minima:"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/max_temp" />
+
+        <TextView
+            android:id="@+id/min_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="max: temp"
+            android:padding="5dp"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textoT" />
 
         <fragment
             android:id="@+id/map"
@@ -79,10 +98,11 @@
             android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_longitud"
+            app:layout_constraintTop_toBottomOf="@+id/min_temp"
             map:cameraZoom="10"
             map:uiRotateGestures="true"
             map:uiZoomControls="true" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

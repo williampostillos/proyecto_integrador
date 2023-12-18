@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -31,10 +32,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
     }
+
     buildFeatures {
         viewBinding = true
     }
@@ -62,11 +65,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
 
 
-    implementation("org.apache.httpcomponents:httpclient-android:4.3.5.1") {
-        exclude(group = "org.apache.httpcomponents", module = "httpclient")
-    }
+    implementation("junit:junit:4.+")
+    implementation("androidx.test.ext:junit:1.1.3")
+    implementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation("com.google.android.gms:play-services-location:18.0.0")
+    implementation("com.squareup.picasso:picasso:2.71828")
 
-    implementation("com.loopj.android:android-async-http:1.4.10")
 
     implementation("com.google.code.gson:gson:2.8.8")
 

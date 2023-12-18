@@ -30,7 +30,7 @@
                 android:id="@+id/titleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="Fenómeno El Niño"
                 android:layout_marginTop="36dp"
                 android:textAlignment="center"
                 android:layout_marginBottom="8dp"
@@ -51,7 +51,10 @@
                 android:id="@+id/detailTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+                android:text="
+El fenómeno El Niño es un evento climático que ocurre en el océano Pacífico ecuatorial, caracterizado por un calentamiento inusual de las aguas superficiales del océano. Este fenómeno tiene importantes repercusiones en el clima a nivel mundial y puede afectar a diversas regiones del planeta.
+
+Normalmente, en el océano Pacífico ecuatorial, los vientos alisios soplan de este a oeste, empujando las aguas superficiales cálidas hacia el oeste. Durante un evento de El Niño, sin embargo, estos vientos se debilitan o invierten, lo que provoca que las aguas cálidas se desplacen hacia el este, acumulándose cerca de las costas de América del Sur."
                 android:layout_marginTop="36dp"
                 android:textAlignment="center"
                 android:layout_marginBottom="8dp"

@@ -1,57 +1,91 @@
 package com.example.proyecto_integrador.Activitis
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
+
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import com.example.proyecto_integrador.R
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.example.proyecto_integrador.databinding.FragmentAlertasBinding
+import org.json.JSONObject
 
 class AlertasFragment : Fragment() {
+
+    private lateinit var binding: FragmentAlertasBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_alertas, container, false)
+        binding = FragmentAlertasBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val editText: EditText = view.findViewById(R.id.searchCity)
-        val backButton: ImageView = view.findViewById(R.id.backButton)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        backButton.setOnClickListener {
-            activity?.finish()
+        // Acceder a las vistas utilizando binding
+
+        val lat = arguments?.getString("lat")
+        val long = arguments?.getString("long")
+
+        binding.searchbtn.setOnClickListener {
+            val citytxt = binding.citynamesearch.text.toString()
+            getJSONDataByname(citytxt)
         }
+    }
 
-        editText.setOnEditorActionListener { v, actionId, event ->
-            val newCity = editText.text.toString()
+    private fun getJSONDataByname(cityname: String) {
+        val API_KEY = "b8c4acbdc7b133df1986cb69732b5dac"
 
-            // Crear una instancia del fragmento que deseas mostrar
-            val mostrarAlertasFragment = MostrarAlertasFragment()
+        val queue = Volley.newRequestQueue(requireContext())
+        val url = "https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${API_KEY}"
 
-            // Crear un Bundle para pasar datos al fragmento
-            val bundle = Bundle()
-            bundle.putString("City", newCity)
-            mostrarAlertasFragment.arguments = bundle
+        val jsonRequest = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            Response.Listener { response ->
+                setValues(response)
+            },
+            Response.ErrorListener {
+                // Handle error
+            })
 
-            // Iniciar la transacción del fragmento
-            val transaction: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        queue.add(jsonRequest)
+    }
 
-            // Reemplazar el fragmento actual con el nuevo fragmento
-            transaction.replace(R.id.frameContainer, mostrarAlertasFragment)
 
-            // Añadir la transacción a la pila para que el botón de retroceso funcione correctamente
-            transaction.addToBackStack(null)
+    private fun setValues(response: JSONObject){
 
-            // Confirmar la transacción
-            transaction.commit()
+        binding.city.text = response.getString("name")
+        val lat = response.getJSONObject("coord").getString("lat")
+        val long = response.getJSONObject("coord").getString("lon")
+        binding.coordinates.text = "$lat , $long"
 
-            false
-        }
+        val main = response.getJSONArray("weather").getJSONObject(0).getString("main")
+        binding.weather.text= main
 
-        return view
+
+        var tempr=response.getJSONObject("main").getString("temp")
+        tempr=((((tempr).toFloat()-273.15)).toInt()).toString()
+        binding.temp.text="${tempr}°C"
+
+
+        var mintemp=response.getJSONObject("main").getString("temp_min")
+        mintemp=((((mintemp).toFloat()-273.15)).toInt()).toString()
+        binding.minTemp.text=mintemp+"°C"
+
+        var maxtemp=response.getJSONObject("main").getString("temp_max")
+        maxtemp=((((maxtemp).toFloat()-273.15)).toInt()).toString()
+        binding.maxTemp.text=maxtemp+"°C"
+
+        binding.pressure.text=response.getJSONObject("main").getString("pressure")
+        binding.humidity.text=response.getJSONObject("main").getString("humidity")+"%"
+        binding.wind.text=response.getJSONObject("wind").getString("speed")
+        binding.degree.text="Degree : "+response.getJSONObject("wind").getString("deg")+"°"
+//        gust.text="Gust : "+response.getJSONObject("wind").getString("gust")
     }
 }
